@@ -409,6 +409,10 @@ char*class_message[]= {
 /*6:*/
 #line 159 "adventure.w"
 void new_word(char *w ,int m);
+
+
+
+
 //void new_word ARGS((char*,int));
 //void new_word(w,m)
 //        char*w;
@@ -424,63 +428,58 @@ void new_word(char *w ,int m);
 //    hash_table[h].meaning= m;
 //}
 
-/*:6*//*8:*/
-#line 185 "adventure.w"
+int lookup(char *w);
+//int lookup ARGS((char*));
+//int lookup(w)
+//        char*w;
+//{
+//    register int h;register char*p;register char t;
+//    t= w[5];w[5]= '\0';
+//    for(h= 0,p= w;*p;p++)h= (*p+h+h)%hash_prime;
+//    w[5]= t;
+//    if(h<0)return-1;
+//    while(hash_table[h].word_type){
+//        if(streq(w,hash_table[h].text))return h;
+//        h++;if(h==hash_prime)h= 0;
+//    }
+//    return-1;
+//}
 
-int lookup ARGS((char*));
-int lookup(w)
-        char*w;
-{
-    register int h;register char*p;register char t;
-    t= w[5];w[5]= '\0';
-    for(h= 0,p= w;*p;p++)h= (*p+h+h)%hash_prime;
-    w[5]= t;
-    if(h<0)return-1;
-    while(hash_table[h].word_type){
-        if(streq(w,hash_table[h].text))return h;
-        h++;if(h==hash_prime)h= 0;
-    }
-    return-1;
-}
 
-/*:8*//*64:*/
-#line 2247 "adventure.w"
+void drop(object t, location l);
+//
+//void drop ARGS((object,location));
+//void drop(t,l)
+//        object t;
+//        location l;
+//{
+//    if(toting(t))holding--;
+//    place[t]= l;
+//    if(l<0)holding++;
+//    else if(l> 0){
+//        link[t]= first[l];
+//        first[l]= t;
+//    }
+//}
 
-void drop ARGS((object,location));
-void drop(t,l)
-        object t;
-        location l;
-{
-    if(toting(t))holding--;
-    place[t]= l;
-    if(l<0)holding++;
-    else if(l> 0){
-        link[t]= first[l];
-        first[l]= t;
-    }
-}
 
-/*:64*//*65:*/
-#line 2267 "adventure.w"
+void carry(object t);
+//void carry ARGS((object));
+//void carry(t)
+//        object t;
+//{register location l= place[t];
+//    if(l>=limbo){
+//        place[t]= inhand;
+//        holding++;
+//        if(l> limbo){
+//            register object r,s;
+//            for(r= 0,s= first[l];s!=t;r= s,s= link[s]);
+//            if(r==0)first[l]= link[s];
+//            else link[r]= link[s];
+//        }
+//    }
+//}
 
-void carry ARGS((object));
-void carry(t)
-        object t;
-{register location l= place[t];
-    if(l>=limbo){
-        place[t]= inhand;
-        holding++;
-        if(l> limbo){
-            register object r,s;
-            for(r= 0,s= first[l];s!=t;r= s,s= link[s]);
-            if(r==0)first[l]= link[s];
-            else link[r]= link[s];
-        }
-    }
-}
-
-/*:65*//*66:*/
-#line 2288 "adventure.w"
 
 boolean is_at_loc ARGS((object));
 boolean is_at_loc(t)
@@ -1912,10 +1911,6 @@ exits to the south and west.",
              "You're in misty cavern.",0);
     make_inst(S,0,oriental);ditto(ORIENTAL);
     make_inst(W,0,alcove);
-
-/*:50*//*51:*/
-#line 1771 "adventure.w"
-
     make_loc(alcove,
              "You are in an alcove.  A small NW path seems to widen after a short\n\
 distance.  An extremely tight tunnel leads east.  It looks like a very\n\
@@ -3454,4 +3449,45 @@ void new_word( char*w, int m)
     for(k= 0,p= w;*p;p++,k++)hash_table[h].text[k]= *p;
     hash_table[h].word_type= current_type;
     hash_table[h].meaning= m;
+}
+
+int lookup(char *w){
+
+    register int h;register char*p;register char t;
+    t= w[5];w[5]= '\0';
+    for(h= 0,p= w;*p;p++)h= (*p+h+h)%hash_prime;
+    w[5]= t;
+    if(h<0)return-1;
+    while(hash_table[h].word_type){
+        if(streq(w,hash_table[h].text))return h;
+        h++;if(h==hash_prime)h= 0;
+    }
+    return-1;
+
+}
+
+void drop(object t, location l){
+    if(toting(t))holding--;
+    place[t]= l;
+    if(l<0)holding++;
+    else if(l> 0){
+        link[t]= first[l];
+        first[l]= t;
+    }
+
+}
+
+void carry(object t){
+    register location l= place[t];
+    if(l>=limbo){
+        place[t]= inhand;
+        holding++;
+        if(l> limbo){
+            register object r,s;
+            for(r= 0,s= first[l];s!=t;r= s,s= link[s]);
+            if(r==0)first[l]= link[s];
+            else link[r]= link[s];
+        }
+    }
+
 }
